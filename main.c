@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-//todo use maxProcesses
+
 #define MAX_Processes 25
 
 typedef struct Child {

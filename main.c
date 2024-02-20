@@ -33,17 +33,24 @@ int findOpenPCB(){
     }
         return -1;
 }
-void appendChild(Child* curr, int c_id){
-//case 1: if curr is null
-if(!curr){
-    curr = (Child*)malloc(sizeof(Child));
-    curr ->id = c_id;
+void appendChild(Child** head, int c_id){
+    Child* newChild = (Child*)malloc(sizeof(Child));
+    newChild->id = c_id;
+    newChild->next = NULL;
+
+    if(*head == NULL){
+        *head = newChild;
+    }
+    else {
+        Child* temp = *head;
+        while(temp->next != NULL){
+            temp = temp->next;
+        }
+        temp->next = newChild;
+    }
 }
-//case 2: if curr is not null
-else{
-        appendChild(curr->next,c_id);
-}
-}
+// Modify the createChild function call to appendChild accordingly.
+
 void createChild(int P_ID){
     //find open ID for new child
     int  ChildID = findOpenPCB();
@@ -56,15 +63,33 @@ void createChild(int P_ID){
     child ->parentID = P_ID;
     child ->children = NULL;
     //add this child to the parents children
-    appendChild(PCB_array[P_ID]->children, ChildID);
+    appendChild(&(PCB_array[P_ID]->children), ChildID);
 };
 void destroy_descendants(int P_ID){
     //todo recursively call this method to destroy children
     //todo free the memory of each child PCB and linked list node
 };
 void printPCB(){
-    //todo
-    printf("CHANGE PRINTPCB");
+   printf("Process list:\n");
+    for(int i = 0; i < MAX_Processes; i++){
+        PCB* curr = PCB_array[i];
+        if(curr) {
+            printf("Process id: %d\n", i);
+            if (curr->parentID != -1) {
+                printf("\tParent process: %d\n", curr->parentID);
+            } else { printf("\tNo parent process\n"); }
+            Child *childProcess = curr->children;
+            if (!childProcess) { printf("\tNo child processes\n"); }
+            else {
+                while (childProcess) {
+                    printf("\tChild process: %d\n", childProcess->id);
+                    childProcess = childProcess->next;
+                }
+            }
+
+        }
+    }
+
 };
 
 //MENU of continuous options for the user
@@ -76,8 +101,9 @@ int menu(int option){
             initializeProcessHierarchy();
             break;
         case 2://create child
-            printf("Enter the parent process id: ");
+            printf("\nEnter the parent process id: ");
             scanf("%d", &id);
+            //todo fix case where user enters an id that doesn't exist or hasn't been initialized
             createChild(id);
             break;
         case 3://destroy descendants
@@ -104,9 +130,10 @@ int main() {
     printf("1) Initialize process hierarchy\n");
     printf("2) Create a new child process\n");
     printf("3) Destroy all descendants of a process\n");
-    printf("4) Quit program and free memory\n");
+    printf("4) Quit program and free memory\n\n");
     printf("Enter selection: ");
     scanf("%d", &option);
+    //printf("\n");
     if(!menu(option)){
         return 0;
     }

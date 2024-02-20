@@ -14,7 +14,7 @@ typedef struct PCB{
     Child* children;
 } PCB;
 PCB* PCB_array[MAX_Processes];
-//skeleton functions TO-Do:
+
 void initializeProcessHierarchy(){
     PCB* first = (PCB*)malloc(sizeof(PCB));
     first ->parentID = -1;
@@ -33,6 +33,7 @@ int findOpenPCB(){
     }
         return -1;
 }
+//adds child to linkedlist in newchild()
 void appendChild(Child** head, int c_id){
     Child* newChild = (Child*)malloc(sizeof(Child));
     newChild->id = c_id;
@@ -55,7 +56,7 @@ bool invalid_id(int id){
     }
     return false;
 }
-// Modify the createChild function call to appendChild accordingly.
+
 
 void createChild(int P_ID){
     //find open ID for new child
